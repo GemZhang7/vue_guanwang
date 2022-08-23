@@ -1,118 +1,168 @@
 <template>
-  <div id="root">
-    <div class="todo-container">
-      <div class="todo-wrap">
-        <MyHeader @AddTodo="AddTodo" />
-        <MyList
-          :todos="todos"
-          :checkTodo="checkTodo"
-          :deleteTodo="deleteTodo"
-        />
-        <MyFooter
-          :todos="todos"
-          @checkAllTodo="checkAllTodo"
-          @clearAllTodo="clearAllTodo"
-        />
+  <div id="app">
+    <el-container>
+      <el-header>
+        <div class="logo">
+          <img src="./assets/img/toplogo.png" alt />
+        </div>
+        <el-menu
+          :default-active="defaultActive"
+          class="el-menu-demo"
+          mode="horizontal"
+          @select="handleSelect"
+          :router="router"
+        >
+          <el-menu-item index="/">首页</el-menu-item>
+          <el-menu-item index="/news">新闻资讯</el-menu-item>
+          <el-menu-item index="/product">产品中心</el-menu-item>
+          <el-menu-item index="/case">经典案例</el-menu-item>
+          <el-menu-item index="/goin">走进科建</el-menu-item>
+          <el-menu-item index="/download">下载APP</el-menu-item>
+        </el-menu>
+      </el-header>
+      <el-main>
+        <router-view />
+      </el-main>
+      <div class="footer" v-show="isShow">
+        <div class="footer-content">
+          <ul class="content-nav">
+            <li>
+              <p>走进科建</p>
+              <span>发展历程</span>
+              <span>企业文化</span>
+              <span>资质荣誉</span>
+              <span>合作伙伴</span>
+            </li>
+            <li>
+              <p>新闻资讯</p>
+              <span>公司新闻</span>
+              <span>行业动态</span>
+            </li>
+            <li>
+              <p>产品中心</p>
+              <span>介绍视频</span>
+              <span>管理模式</span>
+              <span>平台目标</span>
+              <span>功能模块</span>
+            </li>
+            <li>
+              <p>联系我们</p>
+              <span>邮箱：kejianlml@163.com</span>
+              <span>电话：021-55802368</span>
+              <span>地址：上海市杨浦区翔殷路128号12号楼101</span>
+            </li>
+          </ul>
+          <img src="./assets/img/ercode.png" alt />
+        </div>
+        <div class="copyright">
+          <span>科建版权所有</span>
+        </div>
       </div>
-    </div>
+    </el-container>
   </div>
 </template>
 
 <script>
-import MyHeader from "./components/MyHeader";
-import MyList from "./components/MyList";
-import MyFooter from "./components/MyFooter";
-
 export default {
-  name: "App",
-  components: { MyHeader, MyList, MyFooter },
   data() {
     return {
-      todos: JSON.parse(localStorage.getItem("todos")) || [],
+      router: true,
+      defaultActive: "/",
+      isShow: false
     };
   },
   methods: {
-    //添加一个TODO
-    AddTodo(x) {
-      this.todos.unshift(x);
-    },
-    //取消或勾选一个TODO
-    checkTodo(id) {
-      //先传给list，再从list传给item
-      this.todos.forEach((todo) => {
-        if (todo.id === id) todo.done = !todo.done;
-      });
-    },
-    //删除todo
-    deleteTodo(id) {
-      this.todos = this.todos.filter((todo) => todo.id !== id);
-    },
-    //全选或取消全选
-    checkAllTodo(done) {
-      this.todos.forEach((todo) => {
-        todo.done = done;
-      });
-    },
-    //清除勾选的todo
-    clearAllTodo() {
-      this.todos = this.todos.filter((todo) => {
-        return !todo.done;
-      });
-    },
-  },
-  watch: {
-    todos: {
-      deep: true,
-      handler(value) {
-        localStorage.setItem("todos", JSON.stringify(value));
-      },
-    },
-  },
+    handleSelect(key) {
+      this.isShow = this.defaultActive != key;
+      window.console.log(this.isShow);
+    }
+  }
 };
 </script>
 
-<style>
-/*base*/
+<style lang="scss">
+* {
+  padding: 0;
+  margin: 0;
+}
+html,
 body {
-  background: #fff;
+  height: 100%;
 }
 
-.btn {
-  display: inline-block;
-  padding: 4px 12px;
-  margin-bottom: 0;
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 1px 2px rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 }
 
-.btn-danger {
-  color: #fff;
-  background-color: #da4f49;
-  border: 1px solid #bd362f;
-}
-
-.btn-danger:hover {
-  color: #fff;
-  background-color: #bd362f;
-}
-
-.btn:focus {
-  outline: none;
-}
-
-.todo-container {
-  width: 600px;
+.el-header {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  width: 1240px;
   margin: 0 auto;
+  //background-color: #fff;
+
+  .logo {
+    width: 280px;
+    padding: 10px;
+    img {
+      width: 100%;
+      line-height: 60px;
+    }
+  }
 }
-.todo-container .todo-wrap {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.el-main {
+  padding: 0 !important;
+}
+
+.footer {
+  width: 100%;
+  height: 216px;
+  overflow: hidden;
+  background-color: #14679f;
+  &-content {
+    width: 1240px;
+    margin: 0 auto;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    .content-nav {
+      display: flex;
+      justify-content: space-around;
+      li {
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px;
+        //justify-content: center;
+        align-items: flex-start;
+        p {
+          font-size: 20px;
+          color: #d4edff;
+          padding: 10px 0;
+        }
+        span {
+          color: #f7f7f7;
+          font-weight: 300;
+          padding: 5px 0;
+        }
+      }
+    }
+    img {
+      width: 170px;
+      height: 170px;
+      padding: 10px;
+    }
+  }
+  .copyright {
+    height: 30px;
+    background: #125688;
+    span {
+      color: #fff;
+      line-height: 30px;
+    }
+  }
 }
 </style>
